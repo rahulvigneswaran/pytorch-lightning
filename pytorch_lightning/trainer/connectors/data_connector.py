@@ -38,7 +38,7 @@ from pytorch_lightning.utilities.enums import _StrategyType
 from pytorch_lightning.utilities.exceptions import MisconfigurationException
 from pytorch_lightning.utilities.imports import _fault_tolerant_training
 from pytorch_lightning.utilities.model_helpers import is_overridden
-from pytorch_lightning.utilities.rank_zero import rank_zero_deprecation, rank_zero_warn
+from pytorch_lightning.utilities.rank_zero import rank_zero_deprecation, rank_zero_warn, rank_zero_warn_no_action
 from pytorch_lightning.utilities.types import EVAL_DATALOADERS, TRAIN_DATALOADERS
 from pytorch_lightning.utilities.warnings import PossibleUserWarning
 
@@ -480,7 +480,7 @@ class DataConnector:
         apply_to_collection(dataloader, DataLoader, resolve_has_no_sequential_sampler)
 
         if not all_have_sequential_sampler:
-            rank_zero_warn(
+            rank_zero_warn_no_action(
                 "You requested to overfit but enabled training dataloader shuffling."
                 " We are turning off the training dataloader shuffling for you."
             )
