@@ -83,11 +83,25 @@ def _warn(message: Union[str, Warning], stacklevel: int = 2, **kwargs: Any) -> N
         stacklevel = kwargs.pop("stacklevel", 2)
     warnings.warn(message, stacklevel=stacklevel, **kwargs)
 
+def _warn_no_action(message: Union[str, Warning], stacklevel: int = 2, **kwargs: Any) -> None:
+    if type(stacklevel) is type and issubclass(stacklevel, Warning):
+        rank_zero_deprecation(
+            "Support for passing the warning category positionally is deprecated in v1.6 and will be removed in v1.8"
+            f" Please, use `category={stacklevel.__name__}`."
+        )
+        kwargs["category"] = stacklevel
+        stacklevel = kwargs.pop("stacklevel", 2)
+    logging.warning(message, stacklevel=stacklevel, **kwargs)
+
 
 @rank_zero_only
 def rank_zero_warn(message: Union[str, Warning], stacklevel: int = 4, **kwargs: Any) -> None:
     """Function used to log warn-level messages only on rank 0."""
     _warn(message, stacklevel=stacklevel, **kwargs)
+
+def rank_zero_warn_no_action(message: Union[str, Warning], stacklevel: int = 4, **kwargs: Any) -> None:
+    """Function used to log warn-level messages only on rank 0."""
+    _warn_no_action(message, stacklevel=stacklevel, **kwargs)
 
 
 class LightningDeprecationWarning(DeprecationWarning):
